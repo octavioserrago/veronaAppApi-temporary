@@ -21,7 +21,7 @@ exports.create = async ({ branch_id, customer_name, details, payment_method, tot
 };
 
 exports.find = async (ID) => {
-    const query = 'SELECT * FROM sales WHERE id = ?';
+    const query = 'SELECT * FROM sales WHERE sale_id = ?';
     try {
         const [results] = await pool.query(query, [ID]);
         return results.length === 1 ? results[0] : null;
@@ -29,6 +29,18 @@ exports.find = async (ID) => {
         throw error;
     }
 };
+
+exports.findByName = async (customer_name) => {
+    const query = 'SELECT * FROM sales WHERE customer_name LIKE ?';
+    const params = [`%${customer_name}%`];
+    try {
+        const [results] = await pool.query(query, params);
+        return results;
+    } catch (error) {
+        throw error;
+    }
+};
+
 
 exports.update = async ({ ID, branch_id, customer_name, details, payment_method, total_amount, total_money_entries, status }) => {
     const query = 'UPDATE sales SET branch_id = ?, customer_name = ?, details = ?, payment_method = ?, total_amount = ?, total_money_entries = ?, status = ? WHERE id = ?';

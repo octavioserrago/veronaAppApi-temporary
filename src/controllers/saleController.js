@@ -71,3 +71,24 @@ exports.update = async (req, res) => {
         res.status(500).json({ success: false, message: 'Error al intentar actualizar la venta' });
     }
 }
+
+
+exports.findByName = async (req, res) => {
+    const { customer_name } = req.params;
+
+    try {
+        const results = await saleModel.findByName(customer_name);
+
+        if (results.length === 0) {
+            res.status(404).json({ success: false, message: 'No se encontraron ventas con ese nombre' });
+        } else {
+            res.json({ success: true, results });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: 'Error al intentar recuperar las ventas' });
+    }
+};
+
+
+
