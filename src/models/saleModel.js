@@ -42,15 +42,20 @@ exports.findByName = async (customer_name) => {
 };
 
 
-exports.update = async ({ ID, branch_id, customer_name, details, payment_method, total_amount, total_money_entries, status }) => {
-    const query = 'UPDATE sales SET branch_id = ?, customer_name = ?, details = ?, payment_method = ?, total_amount = ?, total_money_entries = ?, status = ? WHERE id = ?';
+exports.update = async (ID, { branch_id, customer_name, details, payment_method, total_amount, total_money_entries, status }) => {
+    const query = 'UPDATE sales SET branch_id = ?, customer_name = ?, details = ?, payment_method = ?, total_amount = ?, total_money_entries = ?, status = ? WHERE sale_id = ?';
     try {
-        await pool.query(query, [branch_id, customer_name, details, payment_method, total_amount, total_money_entries, status, ID]);
+        const [result] = await pool.query(query, [branch_id, customer_name, details, payment_method, total_amount, total_money_entries, status, ID]);
+        if (result.affectedRows === 0) {
+            throw new Error('No se actualizó ninguna fila');
+        }
         return { success: true, message: 'La venta se ha actualizado correctamente' };
     } catch (error) {
+        console.error('Error en la actualización:', error);
         throw error;
     }
 };
+
 
 exports.delete = async (ID) => {
     const query = 'DELETE FROM sales WHERE id = ?';

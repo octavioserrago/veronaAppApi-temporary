@@ -60,17 +60,26 @@ exports.update = async (req, res) => {
 
     try {
         const result = await saleModel.find(ID);
+        console.log('Resultado de `find`:', result);
+
         if (result == null) {
             res.status(404).json({ success: false, message: 'La venta no existe o ha dejado de existir' });
         } else {
-            await saleModel.update(ID, { branch_id, customer_name, details, payment_method, total_amount, total_money_entries, status });
-            res.json({ success: true, message: 'La venta se ha actualizado correctamente' });
+            try {
+                const updateResult = await saleModel.update(ID, { branch_id, customer_name, details, payment_method, total_amount, total_money_entries, status });
+                res.json(updateResult);
+            } catch (updateError) {
+                console.error('Error durante la actualización:', updateError);
+                res.status(500).json({ success: false, message: 'Error al intentar actualizar la venta', error: updateError.message });
+            }
         }
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ success: false, message: 'Error al intentar actualizar la venta' });
+        console.error('Error al buscar la venta:', error);
+        res.status(500).json({ success: false, message: 'Error al intentar encontrar la venta', error: error.message });
     }
-}
+};
+
+
 
 
 exports.findByName = async (req, res) => {
