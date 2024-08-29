@@ -9,6 +9,8 @@ router.get('/:ID', saleController.show);
 router.put('/:ID', saleController.update);
 router.delete('/:ID', saleController.delete);
 router.get('/search/:customer_name', saleController.findByName);
+router.get('/filter', saleController.filterAll);
+
 
 
 

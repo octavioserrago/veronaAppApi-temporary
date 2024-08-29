@@ -99,5 +99,51 @@ exports.findByName = async (req, res) => {
     }
 };
 
+exports.filterAll = async (req, res) => {
+    try {
+        const { status, branch_id, complete_payment, start_date, end_date } = req.query;
 
 
+        let filterConditions = {};
+
+
+        if (status) {
+            filterConditions.status = status;
+        }
+
+
+        if (branch_id) {
+            filterConditions.branch_id = branch_id;
+        }
+
+        if (complete_payment !== undefined) {
+            if (complete_payment === 'true') {
+                filterConditions.total_amount = { $eq: filterConditions.total_money_entries };
+            } else if (complete_payment === 'false') {
+                filterConditions.total_amount = { $gt: filterConditions.total_money_entries };
+            }
+        }
+
+
+        if (start_date && end_date) {
+            filterConditions.created_at = {
+                $gte: new Date(start_date),
+                $lte: new Date(end_date)
+            };
+        } else if (start_date) {
+            filterConditions.created_at = {
+                $gte: new Date(start_date)
+            };
+        } else if (end_date) {
+            filterConditions.created_at = {
+                $lte: new Date(end_date)
+            };
+        }
+        const sales = await saleModel.filter(filterConditions);
+
+        res.json({ success: true, sales });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: 'Error al intentar filtrar las ventas' });
+    }
+};

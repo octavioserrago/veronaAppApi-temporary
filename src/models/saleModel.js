@@ -56,13 +56,48 @@ exports.update = async (ID, { branch_id, customer_name, details, payment_method,
     }
 };
 
+exports.filter = async ({ status, branch_id, complete_payment, start_date, end_date }) => {
+    let query = 'SELECT * FROM sales WHERE 1=1';
+    const params = [];
 
-exports.delete = async (ID) => {
-    const query = 'DELETE FROM sales WHERE id = ?';
+    // Filtro por estado
+    if (status) {
+        query += ' AND status = ?';
+        params.push(status);
+    }
+
+    // Filtro por sucursal
+    if (branch_id) {
+        query += ' AND branch_id = ?';
+        params.push(branch_id);
+    }
+
+    // Filtro por pago completo/incompleto
+    if (complete_payment !== undefined) {
+        if (complete_payment === 'true') {
+            query += ' AND total_amount = total_money_entries';
+        } else if (complete_payment === 'false') {
+            query += ' AND total_amount > total_money_entries';
+        }
+    }
+
+    // Filtro por rango de fechas
+    if (start_date && end_date) {
+        query += ' AND created_at BETWEEN ? AND ?';
+        params.push(start_date, end_date);
+    } else if (start_date) {
+        query += ' AND created_at >= ?';
+        params.push(start_date);
+    } else if (end_date) {
+        query += ' AND created_at <= ?';
+        params.push(end_date);
+    }
+
     try {
-        const [results] = await pool.query(query, [ID]);
+        const [results] = await pool.query(query, params);
         return results;
     } catch (error) {
+        console.error('Error al filtrar ventas:', error);
         throw error;
     }
 };
