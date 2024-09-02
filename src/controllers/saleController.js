@@ -101,49 +101,49 @@ exports.findByName = async (req, res) => {
 
 exports.filterAll = async (req, res) => {
     try {
-        const { status, branch_id, complete_payment, start_date, end_date } = req.query;
+        const { status, branch_id, complete_payment, created_at } = req.query;
 
+        let query = 'SELECT * FROM sales WHERE 1=1';
+        const params = [];
 
-        let filterConditions = {};
-
-
+        // Filtro por estado
         if (status) {
-            filterConditions.status = status;
+            query += ' AND status = ?';
+            params.push(status);
         }
 
-
+        // Filtro por sucursal
         if (branch_id) {
-            filterConditions.branch_id = branch_id;
+            query += ' AND branch_id = ?';
+            params.push(branch_id);
         }
 
+        // Filtro por pago completo/incompleto
         if (complete_payment !== undefined) {
             if (complete_payment === 'true') {
-                filterConditions.total_amount = { $eq: filterConditions.total_money_entries };
+                query += ' AND total_amount = total_money_entries';
             } else if (complete_payment === 'false') {
-                filterConditions.total_amount = { $gt: filterConditions.total_money_entries };
+                query += ' AND total_amount > total_money_entries';
+            } else {
+                return res.status(400).json({ success: false, message: 'Valor inválido para complete_payment' });
             }
         }
 
-
-        if (start_date && end_date) {
-            filterConditions.created_at = {
-                $gte: new Date(start_date),
-                $lte: new Date(end_date)
-            };
-        } else if (start_date) {
-            filterConditions.created_at = {
-                $gte: new Date(start_date)
-            };
-        } else if (end_date) {
-            filterConditions.created_at = {
-                $lte: new Date(end_date)
-            };
+        // Filtro por fecha específica
+        if (created_at) {
+            const date = new Date(created_at);
+            if (isNaN(date.getTime())) {
+                return res.status(400).json({ success: false, message: 'Fecha inválida en created_at' });
+            }
+            query += ' AND DATE(created_at) = ?';
+            params.push(date.toISOString().split('T')[0]); // Formatear como 'YYYY-MM-DD'
         }
-        const sales = await saleModel.filter(filterConditions);
 
+        // Ejecutar la consulta y devolver los resultados
+        const [sales] = await pool.query(query, params);
         res.json({ success: true, sales });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ success: false, message: 'Error al intentar filtrar las ventas' });
+        console.error('Error al intentar filtrar las ventas:', error);
+        res.status(500).json({ success: false, message: `Error interno del servidor: ${error.message}` });
     }
 };

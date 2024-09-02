@@ -56,7 +56,7 @@ exports.update = async (ID, { branch_id, customer_name, details, payment_method,
     }
 };
 
-exports.filter = async ({ status, branch_id, complete_payment, start_date, end_date }) => {
+exports.filter = async ({ status, branch_id, complete_payment, created_at }) => {
     let query = 'SELECT * FROM sales WHERE 1=1';
     const params = [];
 
@@ -81,16 +81,10 @@ exports.filter = async ({ status, branch_id, complete_payment, start_date, end_d
         }
     }
 
-    // Filtro por rango de fechas
-    if (start_date && end_date) {
-        query += ' AND created_at BETWEEN ? AND ?';
-        params.push(start_date, end_date);
-    } else if (start_date) {
-        query += ' AND created_at >= ?';
-        params.push(start_date);
-    } else if (end_date) {
-        query += ' AND created_at <= ?';
-        params.push(end_date);
+
+    if (created_at !== undefined) {
+        query += ' AND created_at = ?';
+        params.push(created_at);
     }
 
     try {
@@ -98,6 +92,16 @@ exports.filter = async ({ status, branch_id, complete_payment, start_date, end_d
         return results;
     } catch (error) {
         console.error('Error al filtrar ventas:', error);
+        throw error;
+    }
+};
+
+exports.delete = async (ID) => {
+    const query = 'DELETE FROM sales WHERE sale_id = ?';
+    try {
+        const [results] = await pool.query(query, [ID]);
+        return results;
+    } catch (error) {
         throw error;
     }
 };
