@@ -41,7 +41,6 @@ exports.findByName = async (customer_name) => {
     }
 };
 
-
 exports.update = async (ID, { branch_id, customer_name, details, payment_method, total_amount, total_money_entries, status }) => {
     const query = 'UPDATE sales SET branch_id = ?, customer_name = ?, details = ?, payment_method = ?, total_amount = ?, total_money_entries = ?, status = ? WHERE sale_id = ?';
     try {
@@ -56,7 +55,8 @@ exports.update = async (ID, { branch_id, customer_name, details, payment_method,
     }
 };
 
-exports.filter = async ({ status, branch_id, complete_payment, created_at }) => {
+// saleModel.js
+exports.filterSales = async ({ status, branch_id, complete_payment, created_at }) => {
     let query = 'SELECT * FROM sales WHERE 1=1';
     const params = [];
 
@@ -81,18 +81,24 @@ exports.filter = async ({ status, branch_id, complete_payment, created_at }) => 
         }
     }
 
-
-    if (created_at !== undefined) {
-        query += ' AND created_at = ?';
+    if (created_at) {
+        query += ' AND DATE(created_at) = ?';
         params.push(created_at);
     }
 
+    console.log('Consulta SQL:', query);
+    console.log('Parámetros:', params);
+
     try {
         const [results] = await pool.query(query, params);
-        return results;
+        if (results.length > 0) {
+            return { success: true, results };
+        } else {
+            return { success: false, message: 'No se encontraron resultados con los filtros proporcionados.' };
+        }
     } catch (error) {
         console.error('Error al filtrar ventas:', error);
-        throw error;
+        return { success: false, message: 'Error en el servidor', error: error.message };
     }
 };
 

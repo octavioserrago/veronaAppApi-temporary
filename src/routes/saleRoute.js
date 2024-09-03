@@ -7,9 +7,9 @@ router.get('/', saleController.index);
 router.post('/', saleController.store);
 router.get('/:ID', saleController.show);
 router.put('/:ID', saleController.update);
-router.delete('/:ID', saleController.delete);
 router.get('/search/:customer_name', saleController.findByName);
-router.get('/filter', saleController.filterAll);
+router.get('/filter/:status?/:branch_id?/:complete_payment?/:created_at?', saleController.filterSales);
+router.delete('/:ID', saleController.delete);
 
 
 
