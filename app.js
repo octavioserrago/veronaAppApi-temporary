@@ -5,6 +5,7 @@ const cors = require('cors');
 const branchRoute = require('./src/routes/branchRoute');
 const userRoute = require('./src/routes/userRoute');
 const saleRoute = require('./src/routes/saleRoute');
+const blueprintRoute = require('./src/routes/blueprintRoute');
 
 
 const app = express();
@@ -16,7 +17,9 @@ app.use(cors());
 
 app.use('/branches', branchRoute);
 app.use('/users', userRoute);
-app.use('/sales', saleRoute)
+app.use('/sales', saleRoute);
+app.use('/blueprints', blueprintRoute);
+
 
 
 app.get('/', (req, res) => {

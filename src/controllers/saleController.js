@@ -1,5 +1,6 @@
 const saleModel = require('../models/saleModel');
 
+
 exports.index = async (req, res) => {
     try {
         const results = await saleModel.all();
@@ -121,5 +122,4 @@ exports.filterSales = async (req, res) => {
         res.status(500).json({ success: false, message: 'Error en el servidor', error: error.message });
     }
 };
-
 
