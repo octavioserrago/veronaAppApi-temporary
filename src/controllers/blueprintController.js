@@ -82,37 +82,27 @@ exports.delete = async (req, res) => {
     }
 };
 
-exports.seePhotos = async (req, res) => {
-    const saleId = req.params.ID;
-
+exports.verPlanos = async (req, res) => {
+    const { ID } = req.params; // ID de la venta
     try {
-        const blueprintQuery = `
-            SELECT blueprint_id 
-            FROM blueprints 
-            WHERE sale_id = $1
-        `;
-        const blueprintResult = await pool.query(blueprintQuery, [saleId]);
-
-        if (blueprintResult.rows.length === 0) {
-            return res.status(404).json({ message: 'No se encontró ningún plano asociado a esta venta.' });
-        }
-
-        const blueprintId = blueprintResult.rows[0].blueprint_id;
-
-        const photoQuery = `
-            SELECT photo_url 
-            FROM blueprint_photos 
-            WHERE blueprint_id = $1
-        `;
-        const photoResult = await pool.query(photoQuery, [blueprintId]);
-
-        if (photoResult.rows.length === 0) {
-            return res.status(404).json({ message: 'No se encontraron fotos para este plano.' });
-        }
-
-        return res.status(200).json(photoResult.rows);
+        const results = await blueprintModel.findBySaleId(ID); // Buscar planos por sale_id
+        res.json({ success: true, results });
     } catch (error) {
-        console.error('Error al obtener las fotos:', error);
-        return res.status(500).json({ message: 'Error interno del servidor.' });
+        console.error('Error al obtener los planos de la venta:', error);
+        res.status(500).json({ success: false, message: 'Error al obtener los planos de la venta' });
     }
 };
+
+exports.verFotosPlano = async (req, res) => {
+    const { ID } = req.params; // ID del plano
+    try {
+        const results = await blueprintModel.findPhotosByBlueprintId(ID); // Buscar fotos por blueprint_id
+        res.json({ success: true, results });
+    } catch (error) {
+        console.error('Error al obtener las fotos del plano:', error);
+        res.status(500).json({ success: false, message: 'Error al obtener las fotos del plano' });
+    }
+};
+
+
+

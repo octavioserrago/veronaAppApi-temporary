@@ -53,3 +53,24 @@ exports.delete = async (ID) => {
         throw error;
     }
 };
+
+exports.findBySaleId = async (sale_id) => {
+    const query = 'SELECT blueprint_id, blueprintCode FROM blueprints WHERE sale_id = ?';
+    try {
+        const [results] = await pool.query(query, [sale_id]);
+        return results;
+    } catch (error) {
+        throw error;
+    }
+};
+
+exports.findPhotosByBlueprintId = async (blueprint_id) => {
+    const query = 'SELECT photo_url FROM blueprint_photos WHERE blueprint_id = ?';
+    try {
+        const [results] = await pool.query(query, [blueprint_id]);
+        return results;
+    } catch (error) {
+        throw error;
+    }
+};
+
