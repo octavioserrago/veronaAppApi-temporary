@@ -93,16 +93,31 @@ exports.verPlanos = async (req, res) => {
     }
 };
 
-exports.verFotosPlano = async (req, res) => {
-    const { ID } = req.params; // ID del plano
+exports.getPlanosPorVenta = async (req, res) => {
+    const { ID } = req.params; // ID de la venta
     try {
-        const results = await blueprintModel.findPhotosByBlueprintId(ID); // Buscar fotos por blueprint_id
+        const results = await blueprintModel.findBySaleId(ID); // Buscar planos por sale_id
+        if (results.length === 0) {
+            return res.status(404).json({ success: false, message: 'No se encontraron planos para esta venta' });
+        }
         res.json({ success: true, results });
     } catch (error) {
-        console.error('Error al obtener las fotos del plano:', error);
-        res.status(500).json({ success: false, message: 'Error al obtener las fotos del plano' });
+        console.error('Error al obtener los planos de la venta:', error);
+        res.status(500).json({ success: false, message: 'Error al obtener los planos de la venta' });
     }
 };
 
-
-
+// Método para obtener fotos por ID de plano
+exports.verFotosPorVenta = async (req, res) => {
+    const { ID } = req.params; // ID de la venta
+    try {
+        const results = await blueprintModel.findPhotosBySaleId(ID); // Buscar fotos por sale_id
+        if (results.length === 0) {
+            return res.status(404).json({ success: false, message: 'No se encontraron fotos para esta venta' });
+        }
+        res.json({ success: true, results }); // Respuesta con las fotos
+    } catch (error) {
+        console.error('Error al obtener las fotos de la venta:', error);
+        res.status(500).json({ success: false, message: 'Error al obtener las fotos de la venta' });
+    }
+};

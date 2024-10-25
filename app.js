@@ -6,6 +6,7 @@ const branchRoute = require('./src/routes/branchRoute');
 const userRoute = require('./src/routes/userRoute');
 const saleRoute = require('./src/routes/saleRoute');
 const blueprintRoute = require('./src/routes/blueprintRoute');
+const blueprintPhotosRoute = require('./src/routes/blueprintPhotosRoute');
 
 
 const app = express();
@@ -19,6 +20,7 @@ app.use('/branches', branchRoute);
 app.use('/users', userRoute);
 app.use('/sales', saleRoute);
 app.use('/blueprints', blueprintRoute);
+app.use('/blueprintPhotos', blueprintPhotosRoute);
 
 
 

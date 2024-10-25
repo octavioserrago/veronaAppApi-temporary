@@ -7,8 +7,8 @@ router.post('/', blueprintController.store);
 router.get('/:ID', blueprintController.show);
 router.put('/:ID', blueprintController.update);
 router.delete('/:ID', blueprintController.delete);
-router.get('/blueprints/:ID', blueprintController.verPlanos);
-router.get('/photos/:ID', blueprintController.verFotosPlano);
+router.get('/sales/:ID', blueprintController.getPlanosPorVenta);
+router.get('/sales/photos/:ID', blueprintController.verFotosPorVenta);
 
 
 

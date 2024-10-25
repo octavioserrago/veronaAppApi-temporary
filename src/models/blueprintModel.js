@@ -54,8 +54,9 @@ exports.delete = async (ID) => {
     }
 };
 
+// Obtener todos los planos relacionados a una venta
 exports.findBySaleId = async (sale_id) => {
-    const query = 'SELECT blueprint_id, blueprintCode FROM blueprints WHERE sale_id = ?';
+    const query = 'SELECT blueprint_id, blueprintCode, description FROM blueprints WHERE sale_id = ?';
     try {
         const [results] = await pool.query(query, [sale_id]);
         return results;
@@ -64,13 +65,18 @@ exports.findBySaleId = async (sale_id) => {
     }
 };
 
-exports.findPhotosByBlueprintId = async (blueprint_id) => {
-    const query = 'SELECT photo_url FROM blueprint_photos WHERE blueprint_id = ?';
+// Obtener fotos asociadas a un plano específico
+exports.findPhotosBySaleId = async (sale_id) => {
+    const query = `
+        SELECT bp.photo_url 
+        FROM blueprint_photos bp 
+        JOIN blueprints b ON bp.blueprint_id = b.blueprint_id 
+        WHERE b.sale_id = ?;
+    `;
     try {
-        const [results] = await pool.query(query, [blueprint_id]);
+        const [results] = await pool.query(query, [sale_id]);
         return results;
     } catch (error) {
         throw error;
     }
 };
-
