@@ -12,11 +12,11 @@ exports.index = async (req, res) => {
 }
 
 exports.store = async (req, res) => {
-    const { branch_id, customer_name, details, payment_method, total_amount, total_money_entries, status } = req.body;
-    console.log("Received data:", { branch_id, customer_name, details, payment_method, total_amount, total_money_entries, status });
+    const { branch_id, customer_name, details, payment_method, total_amount, total_money_entries, phoneNumber, status } = req.body;
+    console.log("Received data:", { branch_id, customer_name, details, payment_method, total_amount, total_money_entries, phoneNumber, status });
 
     try {
-        await saleModel.create({ branch_id, customer_name, details, payment_method, total_amount, total_money_entries, status });
+        await saleModel.create({ branch_id, customer_name, details, payment_method, total_amount, total_money_entries, phoneNumber, status });
         res.json({ success: true, message: 'La venta se ha creado correctamente' });
     } catch (error) {
         console.log(error);
@@ -41,7 +41,7 @@ exports.show = async (req, res) => {
 
 exports.update = async (req, res) => {
     const { ID } = req.params;
-    const { branch_id, customer_name, details, payment_method, total_amount, total_money_entries, status } = req.body;
+    const { branch_id, customer_name, details, payment_method, total_amount, total_money_entries, phoneNumber, status } = req.body;
 
     try {
         const result = await saleModel.find(ID);
@@ -51,7 +51,7 @@ exports.update = async (req, res) => {
             res.status(404).json({ success: false, message: 'La venta no existe o ha dejado de existir' });
         } else {
             try {
-                const updateResult = await saleModel.update(ID, { branch_id, customer_name, details, payment_method, total_amount, total_money_entries, status });
+                const updateResult = await saleModel.update(ID, { branch_id, customer_name, details, payment_method, total_amount, total_money_entries, phoneNumber, status });
                 res.json(updateResult);
             } catch (updateError) {
                 console.error('Error durante la actualización:', updateError);

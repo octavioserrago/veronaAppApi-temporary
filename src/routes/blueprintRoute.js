@@ -1,15 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const blueprintController = require('../controllers/blueprintController');
+const { requireAuth } = require("../middlewares/auth");
 
-router.get('/', blueprintController.index);
-router.post('/', blueprintController.store);
-router.get('/:ID', blueprintController.show);
-router.put('/:ID', blueprintController.update);
-router.delete('/:ID', blueprintController.delete);
-router.put('/:ID', blueprintController.updateBlueprintStatus);
-router.get('/sales/:ID', blueprintController.getPlanosPorVenta);
-router.get('/sales/photos/:ID', blueprintController.verFotosPorVenta);
+router.get('/', requireAuth, blueprintController.index);
+router.post('/', requireAuth, blueprintController.store);
+router.get('/:ID', requireAuth, blueprintController.show);
+router.put('/:ID', requireAuth, blueprintController.update);
+router.delete('/:ID', requireAuth, blueprintController.delete);
+router.put('/:ID', requireAuth, blueprintController.updateBlueprintStatus);
+router.get('/sales/:ID', requireAuth, blueprintController.getPlanosPorVenta);
+router.get('/sales/photos/:ID', requireAuth, blueprintController.verFotosPorVenta);
 
 
 

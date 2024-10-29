@@ -10,10 +10,10 @@ exports.all = async () => {
     }
 };
 
-exports.create = async ({ branch_id, customer_name, details, payment_method, total_amount, total_money_entries, status }) => {
-    const query = 'INSERT INTO sales (branch_id, customer_name, details, payment_method, total_amount, total_money_entries, status) VALUES (?, ?, ?, ?, ?, ?, ?)';
+exports.create = async ({ branch_id, customer_name, details, payment_method, total_amount, total_money_entries, phoneNumber, status }) => {
+    const query = 'INSERT INTO sales (branch_id, customer_name, details, payment_method, total_amount, total_money_entries, phoneNumber, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
     try {
-        await pool.query(query, [branch_id, customer_name, details, payment_method, total_amount, total_money_entries, status]);
+        await pool.query(query, [branch_id, customer_name, details, payment_method, total_amount, total_money_entries, phoneNumber, status]);
         return { success: true, message: 'La venta se ha creado correctamente' };
     } catch (error) {
         throw error;
@@ -41,10 +41,10 @@ exports.findByName = async (customer_name) => {
     }
 };
 
-exports.update = async (ID, { branch_id, customer_name, details, payment_method, total_amount, total_money_entries, status }) => {
-    const query = 'UPDATE sales SET branch_id = ?, customer_name = ?, details = ?, payment_method = ?, total_amount = ?, total_money_entries = ?, status = ? WHERE sale_id = ?';
+exports.update = async (ID, { branch_id, customer_name, details, payment_method, total_amount, total_money_entries, phoneNumber, status }) => {
+    const query = 'UPDATE sales SET branch_id = ?, customer_name = ?, details = ?, payment_method = ?, total_amount = ?, total_money_entries = ?, phoneNumber = ?, status = ? WHERE sale_id = ?';
     try {
-        const [result] = await pool.query(query, [branch_id, customer_name, details, payment_method, total_amount, total_money_entries, status, ID]);
+        const [result] = await pool.query(query, [branch_id, customer_name, details, payment_method, total_amount, total_money_entries, phoneNumber, status, ID]);
         if (result.affectedRows === 0) {
             throw new Error('No se actualizó ninguna fila');
         }
