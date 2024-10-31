@@ -11,7 +11,7 @@ const blueprintPhotosRoute = require('./src/routes/blueprintPhotosRoute');
 
 
 const app = express();
-const port = 3333;
+const port = 3305;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
