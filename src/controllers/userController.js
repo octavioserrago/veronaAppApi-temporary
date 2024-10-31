@@ -14,18 +14,25 @@ exports.index = async (req, res) => {
 
 
 exports.store = async (req, res) => {
-    const { name, password, branch_id } = req.body;
-    console.log("Received data:", { name, password, branch_id });
+    const { user_name, password, branch_id } = req.body;
+    console.log("Request body:", req.body);
+    console.log("Received data:", { user_name, password, branch_id });
+
+
+
+    if (!user_name || !password || !branch_id) {
+        return res.status(400).json({ success: false, message: "Todos los campos son requeridos." });
+    }
 
     try {
-        await userModel.create({ name, password, branch_id });
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await userModel.create({ user_name, password: hashedPassword, branch_id });
         res.json({ success: true, message: 'El usuario se ha creado correctamente' });
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: 'Error al intentar agregar usuario' });
     }
 };
-
 
 
 exports.show = async (req, res) => {
