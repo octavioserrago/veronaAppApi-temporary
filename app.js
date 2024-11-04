@@ -31,6 +31,11 @@ app.get('/', (req, res) => {
 
 app.listen(port, () => {
     console.log(`Servidor iniciado`);
+    console.log('Conectando a la base de datos con:', {
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        database: process.env.DB_NAME,
+    });
 });
 
 //node --env-file=.env --watch app.js
