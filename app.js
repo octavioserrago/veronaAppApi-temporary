@@ -11,7 +11,7 @@ const blueprintPhotosRoute = require('./src/routes/blueprintPhotosRoute');
 
 
 const app = express();
-const port = 3305;
+const port = 3306;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -30,7 +30,7 @@ app.get('/', (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`Servidor iniciado en: http://localhost:${port}`);
+    console.log(`Servidor iniciado`);
 });
 
 //node --env-file=.env --watch app.js
