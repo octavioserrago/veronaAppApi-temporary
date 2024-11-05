@@ -73,27 +73,29 @@ exports.update = async (req, res) => {
 exports.auth = async (req, res) => {
     const { name, password } = req.body;
     try {
+        console.log('Nombre de usuario recibido:', name);
         const user = await userModel.auth({ name, password });
-        if (user) {
 
+        if (user) {
+            console.log('Usuario encontrado:', user);
             const payload = {
                 id: user.user_id,
                 name: user.user_name,
                 branch_id: user.branch_id
             };
 
-
             const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: '30m' });
             res.json({ success: true, message: 'Autenticación exitosa', user, token: accessToken });
-
         } else {
+            console.log('No se encontró el usuario o contraseña incorrecta');
             res.status(401).json({ success: false, message: 'Nombre de usuario o contraseña incorrectos' });
         }
     } catch (error) {
-        console.log(error);
+        console.error('Error en la autenticación:', error);
         res.status(500).json({ success: false, message: 'Error al intentar autenticar el usuario' });
     }
 };
+
 
 exports.delete = async (req, res) => {
     const { ID } = req.params;
