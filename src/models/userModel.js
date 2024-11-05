@@ -11,12 +11,12 @@ exports.all = async () => {
     }
 };
 
-exports.create = async ({ name, password, branch_id }) => {
+exports.create = async ({ user_name, password, branch_id }) => {
     const saltRounds = 10;
     try {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         const query = 'INSERT INTO users (user_name, user_password, branch_id) VALUES (?, ?, ?)';
-        await pool.query(query, [name, hashedPassword, branch_id]);
+        await pool.query(query, [user_name, hashedPassword, branch_id]);
         return { success: true, message: 'Usuario creado exitosamente' };
     } catch (error) {
         throw error;
