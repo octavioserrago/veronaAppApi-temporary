@@ -1,4 +1,5 @@
 const userModel = require('../models/userModel');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 
@@ -17,8 +18,6 @@ exports.store = async (req, res) => {
     const { user_name, password, branch_id } = req.body;
     console.log("Request body:", req.body);
     console.log("Received data:", { user_name, password, branch_id });
-
-
 
     if (!user_name || !password || !branch_id) {
         return res.status(400).json({ success: false, message: "Todos los campos son requeridos." });
