@@ -24,8 +24,7 @@ exports.store = async (req, res) => {
     }
 
     try {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        await userModel.create({ user_name, password: hashedPassword, branch_id });
+        await userModel.create({ user_name, password: password, branch_id });
         res.json({ success: true, message: 'El usuario se ha creado correctamente' });
     } catch (error) {
         console.log(error);
@@ -69,11 +68,13 @@ exports.update = async (req, res) => {
     }
 };
 
-
 exports.auth = async (req, res) => {
-    const { name, password } = req.body;
+    console.log("Request body recibido en auth:", req.body); // Log para ver el cuerpo
+    const { name, password } = req.body; // Aquí debería desestructurar correctamente si el cuerpo es válido
+    console.log('Nombre de usuario recibido:', name);
+    console.log('Contraseña recibida:', password);
+
     try {
-        console.log('Nombre de usuario recibido:', name);
         const user = await userModel.auth({ name, password });
 
         if (user) {
@@ -95,6 +96,9 @@ exports.auth = async (req, res) => {
         res.status(500).json({ success: false, message: 'Error al intentar autenticar el usuario' });
     }
 };
+
+
+
 
 
 exports.delete = async (req, res) => {
