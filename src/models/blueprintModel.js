@@ -10,10 +10,10 @@ exports.all = async () => {
     }
 };
 
-exports.create = async ({ sale_id, blueprintCode, description, material, colour, status }) => {
-    const query = 'INSERT INTO blueprints (sale_id, blueprintCode, description, material, colour, status) VALUES (?, ?, ?, ?, ?, ?)';
+exports.create = async ({ sale_id, blueprintCode, material, colour, status }) => {
+    const query = 'INSERT INTO blueprints (sale_id, blueprintCode, material, colour, status) VALUES (?, ?, ?, ?, ?)';
     try {
-        await pool.query(query, [sale_id, blueprintCode, description, material, colour, status]);
+        await pool.query(query, [sale_id, blueprintCode, material, colour, status]);
         return { success: true, message: 'El plano se ha creado correctamente' };
     } catch (error) {
         throw error;
@@ -29,12 +29,12 @@ exports.find = async (ID) => {
         throw error;
     }
 };
-exports.update = async (ID, { sale_id, blueprintCode, description, material, colour, status }) => {
-    const query = 'UPDATE blueprints SET sale_id = ?, blueprintCode = ?, description = ?, material = ?, colour = ?, status = ? WHERE blueprint_id = ?';
+exports.update = async (ID, { sale_id, blueprintCode, material, colour, status }) => {
+    const query = 'UPDATE blueprints SET sale_id = ?, blueprintCode = ?, material = ?, colour = ?, status = ? WHERE blueprint_id = ?';
 
     try {
         // Ejecutar consulta para actualizar datos del plano
-        const [result] = await pool.query(query, [sale_id, blueprintCode, description, material, colour, status, ID]);
+        const [result] = await pool.query(query, [sale_id, blueprintCode, material, colour, status, ID]);
 
         // Verificar si se actualizó alguna fila
         if (result.affectedRows === 0) {
@@ -63,7 +63,7 @@ exports.delete = async (ID) => {
 
 
 exports.findBySaleId = async (sale_id) => {
-    const query = 'SELECT blueprint_id, blueprintCode, description, material, colour, status FROM blueprints WHERE sale_id = ?';
+    const query = 'SELECT blueprint_id, blueprintCode, material, colour, status FROM blueprints WHERE sale_id = ?';
     try {
         const [results] = await pool.query(query, [sale_id]);
         return results;

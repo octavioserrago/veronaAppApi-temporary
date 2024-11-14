@@ -12,11 +12,11 @@ exports.index = async (req, res) => {
 }
 
 exports.store = async (req, res) => {
-    const { sale_id, blueprintCode, description, material, colour, status } = req.body;
-    console.log("Received data:", { sale_id, blueprintCode, description, material, colour, status });
+    const { sale_id, blueprintCode, material, colour, status } = req.body;
+    console.log("Received data:", { sale_id, blueprintCode, material, colour, status });
 
     try {
-        await blueprintModel.create({ sale_id, blueprintCode, description, material, colour, status });
+        await blueprintModel.create({ sale_id, blueprintCode, material, colour, status });
         res.json({ success: true, message: 'El plano se ha creado correctamente' });
     } catch (error) {
         console.log(error);
@@ -41,7 +41,7 @@ exports.show = async (req, res) => {
 
 exports.update = async (req, res) => {
     const { ID } = req.params;
-    const { sale_id, blueprintCode, description, material, colour, status } = req.body;
+    const { sale_id, blueprintCode, material, colour, status } = req.body;
 
     try {
         const result = await blueprintModel.find(ID);
@@ -52,7 +52,6 @@ exports.update = async (req, res) => {
                 const updateResult = await blueprintModel.update(ID, {
                     sale_id,
                     blueprintCode,
-                    description,
                     material,
                     colour,
                     status
