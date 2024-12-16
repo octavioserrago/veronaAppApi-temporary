@@ -15,22 +15,26 @@ exports.index = async (req, res) => {
 
 
 exports.store = async (req, res) => {
-    const { user_name, password, branch_id } = req.body;
+    const { user_name, password, branch_id, is_adm } = req.body;  // Agregar is_adm aquí
     console.log("Request body:", req.body);
-    console.log("Received data:", { user_name, password, branch_id });
+    console.log("Received data:", { user_name, password, branch_id, is_adm });
 
-    if (!user_name || !password || !branch_id) {
+    if (!user_name || !password || !branch_id || is_adm === undefined) {
         return res.status(400).json({ success: false, message: "Todos los campos son requeridos." });
     }
 
     try {
-        await userModel.create({ user_name, password: password, branch_id });
+        // Si is_adm no se envía, se asigna un valor predeterminado de 0 (no administrador)
+        const isAdmin = is_adm !== undefined ? is_adm : 0;
+
+        await userModel.create({ user_name, password: password, branch_id, is_adm: isAdmin });
         res.json({ success: true, message: 'El usuario se ha creado correctamente' });
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: 'Error al intentar agregar usuario' });
     }
 };
+
 
 
 exports.show = async (req, res) => {
@@ -82,7 +86,8 @@ exports.auth = async (req, res) => {
             const payload = {
                 id: user.user_id,
                 name: user.user_name,
-                branch_id: user.branch_id
+                branch_id: user.branch_id,
+                is_adm: user.is_adm  // Incluyendo el campo is_adm en el payload
             };
 
             const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: '30m' });
