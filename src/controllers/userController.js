@@ -52,10 +52,9 @@ exports.show = async (req, res) => {
     }
 }
 
-
 exports.update = async (req, res) => {
     const { ID } = req.params;
-    const { name, password } = req.body;
+    const { name, password } = req.body;  // Eliminamos is_adm del destructuring porque será siempre 0
 
     console.log('Datos recibidos:', { ID, name, password });
 
@@ -64,7 +63,9 @@ exports.update = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Debe proporcionar al menos un campo para actualizar' });
         }
 
-        await userModel.update({ ID, name, password });
+        const is_adm = 0;
+
+        await userModel.update({ ID, name, password, is_adm });
         res.json({ success: true, message: 'El usuario se ha modificado correctamente' });
     } catch (error) {
         console.error('Error al intentar actualizar usuario:', error);
@@ -72,9 +73,11 @@ exports.update = async (req, res) => {
     }
 };
 
+
+
 exports.auth = async (req, res) => {
-    console.log("Request body recibido en auth:", req.body); // Log para ver el cuerpo
-    const { name, password } = req.body; // Aquí debería desestructurar correctamente si el cuerpo es válido
+    console.log("Request body recibido en auth:", req.body);
+    const { name, password } = req.body;
     console.log('Nombre de usuario recibido:', name);
     console.log('Contraseña recibida:', password);
 
@@ -87,7 +90,7 @@ exports.auth = async (req, res) => {
                 id: user.user_id,
                 name: user.user_name,
                 branch_id: user.branch_id,
-                is_adm: user.is_adm  // Incluyendo el campo is_adm en el payload
+                is_adm: user.is_adm
             };
 
             const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: '30m' });
